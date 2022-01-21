@@ -9,6 +9,6 @@
 
 // // functions
 
-extern void processes_scheduling(struct dinet_class *dinet, struct distribution_parameters dispar);
+extern void processes_scheduling(struct dinet_class *dinet, const char *load_distribution, float p1, float p2, long seed0);
 
 #endif
