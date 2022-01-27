@@ -2,6 +2,7 @@
 #include "generators.h"
 
 void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nodes, float duplication_rate, long seed0) {
+	printf("function,generators_duplication_split,start\n");
 	unsigned long n_arcs=1;
 	float dup=duplication_rate;
 	long seed=seed0;
@@ -10,7 +11,6 @@ void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nod
 
 	(*dinet).node=(struct dinode_class *)malloc(n_nodes*sizeof(struct dinode_class));
 	(*dinet).arc=(struct arc_class *)malloc(n_arcs*sizeof(struct arc_class));
-	(*dinet).list=(unsigned long *)malloc(2*n_nodes*sizeof(long));
 
 	(*dinet).node[0].in_degree=0;
 	(*dinet).node[0].ou_degree=1;
@@ -90,13 +90,13 @@ void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nod
 	(*dinet).n_nodes=n_nodes;
 	(*dinet).n_arcs=n_arcs;
 
-	sprintf((*dinet).name,"generators_duplication_split.dup_%f.n_nodes_%lu.seed0_%d",
+	sprintf((*dinet).name,"generators_duplication_split.dup_%f.n_nodes_%lu.seed0_%lu",
 		duplication_rate,
 		n_nodes,
-		-seed0
+		(unsigned long)(-seed0)
 	);
 
 
+	printf("function,generators_duplication_split,end\n");
 	return;
-
 }

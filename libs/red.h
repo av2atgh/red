@@ -2,6 +2,11 @@
 #define _RED_H_
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <stdbool.h>
+#include <limits.h>
+#include <strings.h>
 
 // // flags
 
@@ -14,20 +19,14 @@ struct dinode_class {
 	unsigned long *ou_arc;
 	unsigned long ordering;
 	unsigned long generation;
-	unsigned long duration;
-	unsigned long start_early;
-	unsigned long start_late;
-	unsigned long finish_early;
-	unsigned long finish_late;
-	unsigned long total_float;
-	unsigned long non_critical_path_length;
-	unsigned long in_list;
+	float value0;
+	float value;
 };
 
 struct arc_class {
 	unsigned long pred;
 	unsigned long succ;
-	unsigned long free_float;
+	float value;
 };
 
 struct dinet_class {
@@ -37,15 +36,9 @@ struct dinet_class {
 	struct dinode_class *node;
 	struct arc_class *arc;
 	unsigned long *ordering;
-	unsigned long kmax;
-	float q_in;
-	float q_ou;
-	unsigned long *list;
 };
 
-
 // // functions
-
 
 extern void free_dinet(struct dinet_class *dinet);
 
