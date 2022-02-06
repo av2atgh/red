@@ -19,14 +19,14 @@ struct dinode_class {
 	unsigned long *ou_arc;
 	unsigned long ordering;
 	unsigned long generation;
-	float value0;
-	float value;
+	double value0;
+	double value;
 };
 
 struct arc_class {
 	unsigned long pred;
 	unsigned long succ;
-	float value;
+	double value;
 };
 
 struct dinet_class {
@@ -40,6 +40,8 @@ struct dinet_class {
 
 // // functions
 
+extern int compare_float(const void * a, const void * b);
+extern int compare_double(const void * a, const void * b);
 extern void free_dinet(struct dinet_class *dinet);
 
 #endif

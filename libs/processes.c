@@ -23,25 +23,79 @@ float processes_node_values(struct dinet_class *dinet, char *load_distribution, 
 	return max;
 }
 
-void processes_arc_values(struct dinet_class *dinet, char *load_distribution, float p1, float p2, long seed0) {
+void processes_arc_values(struct dinet_class *dinet, char *load_distribution, float p1, float p2, long seed0, const char *mode) {
 	printf("function,processes_arc_values,start\n");
 	long seed=seed0;
-	unsigned long i,n=(*dinet).n_arcs;
-	if (strcmp(load_distribution,"zero")==0) {
-		for (i=0;i<n;i++) (*dinet).arc[i].value=0.0;
-	}
-	else if (strcmp(load_distribution,"exponential")==0) {
-		float mu=p1;
-		for (i=0;i<n;i++) (*dinet).arc[i].value=-(mu*log(ran2(&seed)));
-	}
-	else if (strcmp(load_distribution,"lognormal")==0) {
-		float mu=p1;
-		float sigma=p2;
-		for (i=0;i<n;i++) (*dinet).arc[i].value=exp(mu+sigma*rand_normal(&seed));
+	unsigned long i,j,l,r,o,n=(*dinet).n_nodes,m=(*dinet).n_arcs;
+	printf("report,mode,%s\n",mode);
+	if (strcmp(mode,"scheduling")==0) {
+		// assign node durations
+		if (strcmp(load_distribution,"zero")==0) {
+			for (i=0;i<n;i++) (*dinet).node[i].value=(*dinet).node[i].value0=0.0;
+		}
+		else if (strcmp(load_distribution,"exponential")==0) {
+			float mu=p1;
+			for (i=0;i<n;i++) (*dinet).node[i].value0=-(mu*log(ran2(&seed)));
+		}
+		else if (strcmp(load_distribution,"lognormal")==0) {
+			float mu=p1;
+			float sigma=p2;
+			for (i=0;i<n;i++) (*dinet).node[i].value0=exp(mu+sigma*rand_normal(&seed));
+		}
+		else {
+			printf("warning,distribution not found,exit\n");
+			exit(1);
+		}
+		// forward pass to assign early finish
+		for (i=0;i<n;i++) (*dinet).node[i].value=(*dinet).node[i].value0;
+		float pass;
+		for (o=0;o<n;o++) {
+			i=(*dinet).ordering[o];
+			for (l=0;l<(*dinet).node[i].ou_degree;l++) {
+				r=(*dinet).node[i].ou_arc[l];
+				j=(*dinet).arc[r].succ;
+				pass=(*dinet).node[i].value+(*dinet).node[j].value0;
+				if (pass>(*dinet).node[j].value) (*dinet).node[j].value=pass;
+			}
+		}
+		// backward pass to assign late finish
+		float max=0.0;
+		for (i=0;i<n;i++) if ((*dinet).node[i].value>max) max=(*dinet).node[i].value;
+		float *late=(float *)malloc(n*sizeof(float));
+		for (i=0;i<n;i++) late[i]=max;
+		for (o=0;o<n;o++) {
+			i=(*dinet).ordering[n-1-o];
+			for (l=0;l<(*dinet).node[i].in_degree;l++) {
+				r=(*dinet).node[i].in_arc[l];
+				j=(*dinet).arc[r].pred;
+				pass=(*dinet).node[i].value-(*dinet).node[i].value0;
+				if (pass<late[j]) late[j]=pass;
+			}
+		}
+		for (r=0;r<m;r++) {
+			i=(*dinet).arc[r].pred;
+			j=(*dinet).arc[r].succ;
+			(*dinet).arc[r].value=late[j]-(*dinet).node[i].value;
+		}
+		free(late);
 	}
 	else {
-		printf("warning,distribution not found,exit\n");
-		exit(1);
+		if (strcmp(load_distribution,"zero")==0) {
+			for (i=0;i<m;i++) (*dinet).arc[i].value=0.0;
+		}
+		else if (strcmp(load_distribution,"exponential")==0) {
+			float mu=p1;
+			for (i=0;i<m;i++) (*dinet).arc[i].value=-(mu*log(ran2(&seed)));
+		}
+		else if (strcmp(load_distribution,"lognormal")==0) {
+			float mu=p1;
+			float sigma=p2;
+			for (i=0;i<m;i++) (*dinet).arc[i].value=exp(mu+sigma*rand_normal(&seed));
+		}
+		else {
+			printf("warning,distribution not found,exit\n");
+			exit(1);
+		}
 	}
 	printf("function,processes_arc_values,end\n");
 	return;
@@ -71,7 +125,7 @@ void processes_summax(struct dinet_class *dinet, char *use_rule) {
 			pass=(*dinet).node[i].value-(*dinet).arc[r].value;
 			if (pass>0) switch (rule) {
 				case SUMSUM:
-					(*dinet).node[j].value+=pass;
+					(*dinet).node[j].value+=pass/(*dinet).node[j].in_degree;
 					break;
 				case MAXSUM:
 					pass+=(*dinet).node[j].value0;
