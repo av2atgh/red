@@ -8,7 +8,7 @@
 
 \begin{document}
 
-\title{An approximation to the end date distribution of project networks}
+\title{Tropical approximation to finish time of activity networks}
 
 \author{Alexei Vazquez}
 \email{alexei@nodeslinks.com}
@@ -18,7 +18,8 @@
 \date{\today}
 
 \begin{abstract}
-A project is represented by a directed acyclic graph. Nodes represent activities and arcs indicate precedence relations. The planned end date is calculated based on the project network and the activity durations. During the project progression adverse events increase activity durations, causing delay cascades and shifting the project end date. Here I derive an analytical formula that approximates the end date distribution when the activity durations and delays follow sub-exponential distributions. The conditions where the approximation is applicable are investigated by means of numerical simulations.
+We breakdown complex projects into activities and their logical dependencies. We estimate the
+project finish time based on the activity durations and relations. However, adverse events trigger delay cascades shifting the finish time. Here I derive a tropical algebraic equation for the finish time of activity networks, encapsulating the principle of linear superposition of exogenous perturbations in the tropical sense. From the tropical algebraic equation I derive the finish time distribution with explicit reference to the distribution of exogenous delays and the network topology and geometry.
 \end{abstract}
 
 \maketitle
@@ -31,90 +32,92 @@ A project is represented by a directed acyclic graph. Nodes represent activities
 
 %\section{Introduction}
 
-Let $P(V,E,\vec{d})$ be a project with a set of activities $V$, a set of activity relations $E$ and a vector of activity durations $\vec{d}$. The project start and end are represented by the activities $i=0$ and $i=n$, respectively, of duration zero. An arc $i\rightarrow j\in E$ indicates that $i$ must finish before $j$ starts, what is called a finish-start relation. Project networks have other relation types \cite{van13}. For simplicity I will limit the analysis to finish-start relations. I will denote by $I_i=\{j|j\rightarrow i\in E\}$ the set of predecessors of activity $i$. Logical consistence implies that the project network is a directed acyclic graph.  The nodes in a directed acyclic graph can be ordered topologically such that if $i\rightarrow j$ then $i$ is before $j$ in the topological order, for all $i\rightarrow j\in E$.
+In recent years we have experienced a significant advance in our understanding of complex networks and of processes running on them \cite{albert02,dorogotsev08,pastor15}. Yet, we still lack an understanding of the interplay between network topology and dynamics in the context of activity networks. There is a vast literature on Monte Carlo simulations of activity networks under uncertainty and risk events \cite{acebes15,moret16}. The critical path method has been used to aggregate perturbations and derive an analytical approximation to the project end date distribution \cite{van13}. However, activity networks are characterised by a complex topology \cite{braha04,braha07,pozzana21} and activity delays exhibit a high frequency of extreme events \cite{pozzana21,araujo21,park21}. In that context the key conditions for the critical path method,  the existence of a dominant path from the project start to its end and the central limit theorem, do not apply. Here I obtain a tropical algebra approximation to the project end date.
+
+Let $P(V,E,\vec{d})$ be a project schedule with a set of activities $V$, a set of activity relations $E$ and a vector of activity durations $\vec{d}$. The project start and end are represented by the activities $i=1$ and $i=n$, respectively, of duration zero. An arc $i\rightarrow j\in E$ indicates that $i$ must finish before $j$ starts. I will denote the set of activity predecessors of $i$ by $I_i=\{j|j\rightarrow i\in E\}$. Logical consistence implies that the project network is a directed acyclic graph.  The nodes in a directed acyclic graph can be ordered topologically such that if $i\rightarrow j$ then $i$ is before $j$ in the topological order, for all $i\rightarrow j\in E$.
 
 The earliest an activity can finish is determined by the recursive relation
 %
 \begin{equation}
-x_i = \max_{j|j\in I_i} x_j + d_i\ ,
+x_i = d_i + \max_{j\in I_i} x_j\ ,
 \label{forward} 
 \end{equation}
 %
-with the boundary condition $x_0=s$, where $s$ is the start date. We calculate $\vec{x}$ with a forward pass of  Eq. (\ref{forward}) along the topological order. Next we do backward propagation to calculate the latest an activity can finish without altering the project end date
+with the boundary condition $x_1=s$, where $s$ is the start date. We calculate $\vec{x}$ with a forward pass of  Eq. (\ref{forward}) along the topological order. Next we do backward propagation to calculate the latest an activity can finish without altering the project end date
 %
 \begin{equation}
-y_i = \min_{j|i \in I_j} \left(y_j - d_i\right)\ ,
+y_i = \min_{j | i \in I_j} \left(y_j - d_j\right)\ ,
 \label{backward} 
 \end{equation}
 %
-with the boundary condition $y_n=x_n$. $\vec{x}$ and $\vec{y}$ set the early and late start dates for every activity. If $i\in I_j$ then the difference 
+with the boundary condition $y_n=x_n$. $\vec{x}$ and $\vec{y}$ set the early and late start dates for every activity. If $i\in I_j$ then 
 %
 \begin{equation}
-w_{ij} = x_i - y_j\ ,
+w_{ji} = x_j - x_i\ ,
 \label{w}
 \end{equation}
 %
-is the free float between the two activities \cite{van13}. The maximum delay at activity $i$ that does not shift the finish date of activity $j$. In turn we can determine the amount of delay tolerated at a given activity without causing a shift in the project end date. This is called to total float and is calculated as follows
+is the free float, the maximum delay at $i$ that does not shift the early finish date of $j$ \cite{van13}. In turn we can determine the amount of delay tolerated at a given activity without causing a shift in the project end date. This is the total float and it is calculated as
 %
 \begin{equation}
-T_{n,i} = x_i-y_i\ .
+T_{ni} = x_i-y_i\ .
 \label{Tn} 
 \end{equation}
 %
-The subscript $n$ emphasises that $T_{in}$ is the total float from activity $i$ to the project end. This will be later generalised to any pair of activities. I have adopted a negative sign for free floats and total floats to indicate delay subtraction. In the main stream literature they are defined as positive \cite{van13}.
+The subscript $n$ emphasises that $T_{ni}$ is the total float from activity $i$ to the project end. This will be generalised below to any pair of activities. I have adopted a negative sign for free floats and total floats to indicate delay subtraction.
 
-In practice exogenous factors delay the start of activities or increase their durations. If the finish delay of an activity exceeds the free float of any successor, then it will cause their delay as well, starting a delay cascade. The delay cascade can reach the project end causing a delay of the project end date. Risk models are developed to determine the distribution of project end dates given delay models for each activity. These models are then investigated by means of numerical simulations and summary statistics are reported. Here I follow an analytical approach instead.
-
-Let $\vec{h}$ represent the vector of activity delays caused by exogenous factors and $\vec{z}$ the vactor of activity delays after the propagation of the exogenous delays. The delays propagate via a recursive equation similar to Eq. (\ref{forward}), with some twists
+In practice exogenous factors delay the activity starts or increase activity durations \cite{park21}. If the finish delay of an activity exceeds the free float of any successor, then it will cause their delay as well, starting a delay cascade \cite{braha05,ellinas19}. Let $\vec{h}$ represent the vector of activity delays caused by exogenous factors and $\vec{z}$ the vector of activity delays after the propagation of the exogenous delays. The delays propagate via the recursive equation
  %
 \begin{equation}
-z_i = f_i\left\{\max_{j\in j|I_i} \left[\max(0,z_j+w_{ji})\right] , h_i\right\}\ .
+z_i = f_i\left\{\max_{j\in I_i} \left[\max(0, w_{ij} + z_j)\right] , h_i\right\}\ .
 \label{forward_delay} 
 \end{equation}
 % 
-The term $\max(0,z_j-w_{ji})$ accounts for the fact that delays are passed on only if they exceed the free float between the activities. Then we take the maximum delay passed from all the incoming relations to activity $i$. The function $f_i(x,y)$ merges the delays coming from predecessors and exogenous sources. If exogenous delays act on activity starts, then $f_i(x,y)=\max(x,y)$. If exogenous delays act on activity durations, then $f_i(x,y)=x+y$. Even a unique contingency such as an adverse weather event can act differently depending on where it falls in the calendar relative to some activity. If it falls before the activity start, it competes with delays from predecessors as a cause of delay for the activity start. If the adverse weather event happens while the activity is ongoing it will delay its finish date on top of any delay coming from predecessor activities. In general, the best we can say is the inequalities
+The term $\max(0,w_{ij}+z_j)$ indicates that delays are passed if they exceed the free float between the activities. Then we take the maximum delay from $j\in I_i$. The function $f_i(x,y)$ merges the delays coming from predecessors (endogenous) and exogenous sources. If exogenous delays act on activity starts, then $f_i(x,y)=\max(x,y)$. If exogenous delays act on activity durations, then $f_i(x,y)=x+y$. Even a unique contingency such as an adverse weather event can act differently depending on where it falls in the calendar relative to an activity. If it falls before the activity start, it competes with delays from predecessors as a cause of delay for the activity start. If the adverse weather event happens while the activity is ongoing it will delay its finish date on top of any delay coming from predecessor activities. In general,
 %
 \begin{equation}
 \max(x,y)\leq f_i(x,y)\leq x+y\ .
 \label{f_bounds}
 \end{equation}
 %
-To be precise we would need a detailed specification of $f_i(x,y)$ for every combination of activity and adverse event. Yet, when $x$ and $y$ follow sub-exponential distributions $\max(x,y)\approx x+y$. If that is the case then $f_i(x,y)\approx \max(x,y)\approx x+y$ and we may obtain a good approximation. 
+To be precise we would specify $f_i(x,y)$ for every combination of activity and adverse event. Yet, when $x$ and $y$ follow sub-exponential distributions $\max(x,y)\approx x+y$. If that is the case then $f_i(x,y)\approx \max(x,y)\approx x+y$. 
 
-Sub-exponential distributions cannot be bounded by any exponential function $f(x) = e^{-\alpha x}$  when $x\rightarrow\infty$ \cite{foss13}. If we take two random variables $x$ and $y$ generated from the same sub-exponential distribution then ${\rm Pr}[x+y>z]\sim {\rm Pr}[\max(x,y)>z]$ when $z\rightarrow\infty$. The only way that $x+y$ is larger than $z$ is that either $x$ or $y$ are larger than $z$. We cannot take this result as grated when we propagate delays in the activity network. The errors may accumulate when the delay propagation takes several steps and free floats act as delay sinks. In the following I investigate the difference in using $\max(x,y)$ and $x+y$ by means of numerical simulations.
+Sub-exponential distributions cannot be bounded by any exponential function $f(x) = e^{-\alpha x}$  when $x\rightarrow\infty$ \cite{foss13}. If we take two random variables $x$ and $y$ generated from the same sub-exponential distribution then ${\rm Pr}[x+y>z]\sim {\rm Pr}[\max(x,y)>z]$ when $z\rightarrow\infty$. The only way that $x+y$ is larger than $z$ is for $x$ or $y$ to be greater than $z$. We cannot take this result as granted when we propagate delays in the activity network. The errors may accumulate when the delay propagation takes several steps and free floats act as delay sinks. In the following I investigate the difference in using $f=\max$ or $f={\rm sum}$ by means of numerical simulations.
 
-We need a model to generate project networks, a model to generate activity durations and a model to generate exogenous delays. For the exogenous delay we will assume a member of the sub-exponential distribution class, the log-normal distribution $p(h)\sim e^{-[log(h/\mu)]^2/2\sigma^2}/h$. For the activity durations we will explore different choices. We will generate project networks using the duplication-split model \cite{vazquez22}. In this model, we start with two activities representing the project start and end, with an arc from start to end. Then, at each discrete step, we select an activity with uniform probability across all current activities (the parent) and create a new activity (the daughter). With probability $q$ the daughter is a duplicate of the parent, inheriting all the incoming and outgoing relations from the parent activity. Otherwise, the parent transfer all the outgoing arcs to the daughter and creates an arc from the parent to the daughter. We call $q$ the duplicate rate.  It is demonstrated that both the in-degree and out-degree distribution has a power law tail with exponent $1/q$ and the network diameter grows as $n^{1-q}$ \cite{vazquez22}. As we tune $q$ from 0 to 1 we change from networks that are quasi-linear and have narrow degree distributions to networks with wide degree distributions and multiple parallel paths.
+We need a model to generate project networks, a model to generate activity durations and a model to generate exogenous delays. We will generate project networks using the duplication-split model \cite{vazquez22}. In this model, we start with two activities representing the project start and end, with an arc from start to end. Then, at each discrete step, we select an activity  $i$ with uniform probability across all current activities and create a new activity $j$. With probability $q$, $j$ is a duplicate of $i$, inheriting all the incoming and outgoing relations of $i$. Otherwise, $i$ transfers all the outgoing arcs to $j$ and an arc from $i$ to $j$ is created. We call $q$ the duplicate rate.  It is demonstrated that both the in-degree and out-degree distribution has a power law tail with exponent $1/q$ and the network diameter grows as $n^{1-q}$ \cite{vazquez22}. As we tune $q$ from 0 to 1 we change from networks that are quasi-linear and have narrow degree distributions to networks with wide degree distributions and multiple parallel paths.
 
-The simulations proceed as follow. The inputs are the number of activities $n$, the duplication rate $q$, the distributions of activity durations $p(d)$ and the exogenous delay distribution $p(h)$. We reiterate the focus on sub-exponentially distributed exogenous delays, so I choose the log-normal $p(h)\sim e^{-[log(h/\mu)]^2/2\sigma^2}/h$ with $\mu=1$. First, we generate a duplication-split network  with parameters $(n,q)$. Second, we assign durations to activities from $p(d)$ and run Eqs. (\ref{forward})-(\ref{w}) to generate the free floats $w$. Third, we generate random delays from $p(h)$ and run Eq. (\ref{forward_delay}) with a pre-defined $f(x,y)$ to calculate $z_n$, the project end delay. We repeat this third step to generate $z_n$ samples and report the smallest $z_n$ that is larger than 80\% of all samples. This quantity is commonly used in project management and it is named the project $p80$. Fourth, for each parameter set $\{n,q,p(d),f(x,y)\}_i$ we generate multiple $p80$ values $\pi(f)_i$ by sampling over realisations of the network and activity durations. We do that for $f(x,y)=\max(x,y)$ and $f(x,y)=x+y$. Finally, we calculate the slope through the origin
+The simulations proceed as follow. The inputs are the number of activities $n$, the duplication rate $q$, the distributions of activity durations $p(d)$ and the exogenous delay distribution $p(h)$. We focus on sub-exponentially distributed exogenous delays, so I choose the log-normal $p(h)\sim e^{-[log(h/\mu)]^2/2\sigma^2}/h$ with $\mu=1$. First, we generate a duplication-split network  with parameters $(n,q)$. Second, we assign durations to activities from $p(d)$ and run Eqs. (\ref{forward})-(\ref{w}) to generate the free floats $w$. Third, we generate random delays from $p(h)$ and run Eq. (\ref{forward_delay}) with a pre-defined $f(x,y)$ to calculate $z_n$, the project end delay. We repeat this third step to generate $z_n$ samples and report the smallest $z_n$ that is larger than 80\% of all samples. This quantity is commonly used in project management and it is named the project $p80$. Fourth, for each parameter set $\{n,q,p(d),p(h),f(x,y)\}_i$ we generate multiple $p80$ values $\pi(f)_i$ by sampling over realisations of the network and activity durations. We do that for $f=\max$ and $f={\rm sum}$. Finally, we calculate the slope through the origin
 %
 \begin{equation}
-S = \frac{ \sum_i \pi(f_{\max})_i \pi(f_{\rm sum})_i }{ \sum_i [\pi(f_{\max})_i]^2 }
+S = \frac{ \sum_i \pi(f={\max})_i \pi(f={\rm sum})_i }{ \sum_i [\pi(f={\max})_i]^2 }
 \label{slope}
 \end{equation}
 %
-Since $x+y\geq\max(x,y)$ then $S\geq1$. The question is how close to 1.
+Since $x+y\geq\max(x,y)$ then $S\geq1$.
 
 \begin{figure}[t]
 \includegraphics[width=3.3in]{maxsum.scheduling.dupsplit.arc_distribution_zero.eps}
-\caption{}
+\caption{Slope between the calculated p80s using $f={\rm sum}$ vs using $f={\max}$, for $\vec{d}=\vec{0}$ and the $(q,n)$ indicated in the legend.}
 \label{fig1}
 \end{figure}
 
-If we set activity durations to zero (or to any constant) we can investigate how the differences between $\max(x,y)$ and $x+y$ propagate without the additional complication of free floats. Given the log-normal $p(h)\sim e^{-[log(h/\mu)]^2/2\sigma^2}/h$, we expect $S\rightarrow1$ when $\sigma\rightarrow\infty$. This asymptotic behaviour is corroborated in Fig. \ref{fig1}. However, the convergence is very slow. We need $\sigma>3$ to attain $S<2$. The variance of the log-normal distribution is order $e^{\sigma^2}$. For example, $\sigma=3$ implies a variance of order $e^9\approx 8000$. We can conclude that, if the activity durations are homogeneous, then $f(x,y)=\max(x,y)$ is a poor lower bound for $f(x,y)=x+y$. A similar picture is obtained using $p(d)\sim e^{-d/\mu_1}$. The same is expected for any exponentially bound distribution.
+If we set activity durations to zero we can investigate $\max$ vs ${\rm sum}$ without the additional complication of free floats. Given the log-normal $p(h)\sim e^{-[log(h/\mu)]^2/2\sigma^2}/h$, we expect $S\rightarrow1$ when $\sigma\rightarrow\infty$. This asymptotic behaviour is corroborated in Fig. \ref{fig1}. However, the convergence is very slow. We need $\sigma>3$ to attain $S<2$. The variance of the log-normal distribution is order $e^{\sigma^2}$. For example, $\sigma=3$ implies a variance of order $e^9\approx 8000$. We can conclude that, if the activity durations are homogeneous, then $f=\max$ is a poor lower bound for $f={\rm sum}$. A similar plot is obtained using $p(d)\sim e^{-d/\mu_1}$ (data not shown). The same is expected for any exponentially bound distribution of activity durations.
 
 \begin{figure}[t]
 \includegraphics[width=3.3in]{maxsum.scheduling.dupsplit.arc_distribution_lognormal.arc_sigma_1.eps}
-\caption{Slope between the calculated p80s using $f_{\rm sum}$ vs using $f_{\max}$, using $\sigma_1=1$ and the $(q,n)$ indicated in the legend. }
+\caption{Slope between the calculated p80s using $f={\rm sum}$ vs using $f={\max}$, for $\sigma_1=1$ and the $(q,n)$ indicated in the legend. }
 \label{fig2}
 \end{figure}
 
 \begin{figure}[t]
 \includegraphics[width=3.3in]{maxsum.scheduling.dupsplit.arc_distribution_lognormal.arc_sigma_3.eps}
-\caption{Slope between the calculated p80s using $f_{\rm sum}$ vs using $f_{\max}$, using $\sigma_1=1$ and the $(q,n)$ indicated in the legend. }
+\caption{Slope between the calculated p80s using $f={\rm sum}$ vs using $f={\max}$, for $\sigma_1=3$ and the $(q,n)$ indicated in the legend. }
 \label{fig3}
 \end{figure}
 
-The picture changes when the activity durations follow a sub-exponential distribution as well. For example, a log-normal distribution $p(d)\sim e^{-[log(d/\mu_1)]^2/2\sigma_1^2}/d$. I will set $\mu_1=1$ since $\sigma_1$ controls the shape of the distribution tail. Setting $\sigma_1=1$ we obtain the plot in Fig. \ref{fig2}. For $\sigma<1$ the value of $S$ is close or below 2. In this context $f_{\max}$ is a good approximation for $f_{\rm sum}$. As $\sigma$ approaches 1 the value of $S$ reaches a maximum and the decays towards $S=1$. The picture is similar for other values of $\sigma_1$, as shown in Fig. \ref{fig3} for $\sigma_1=3$. It becomes evident that there is local maximum of $S$ at $\sigma=\sigma_1$, {\em i.e.} when the exogenous delays and activity durations follow the same sub-exponential distribution. It is also evident that the maximum observed value of $S$ decreases with increasing $\sigma_1$. 
+The picture changes when the activity durations follow a sub-exponential distribution as well. For example, a log-normal distribution $p(d)\sim e^{-[log(d/\mu_1)]^2/2\sigma_1^2}/d$. I will set $\mu_1=1$ since $\sigma_1$ controls the shape of the distribution tail. Setting $\sigma_1=1$ we obtain the plot in Fig. \ref{fig2}. For $\sigma<\sigma_1=1$ the value of $S$ is close or below 2. In this context $f={\max}$ is a good approximation for $f={\rm sum}$. As $\sigma$ approaches 1 the value of $S$ reaches a maximum and the decays towards $S=1$. We observe the same behaviour for $\sigma_1=3$ (Fig. \ref{fig3}). It becomes evident that there is local $S$ maximum at $\sigma=\sigma_1$, {\em i.e.} when the exogenous delays and activity durations have the same log-variance. It is also evident that the maximum value of $S$ decreases with increasing $\sigma_1$.
+
+Regarding the network parameters, for a given number of activities, $S$ is closer to 1 for $q=0.4$ than $q=0.1$. The networks with larger duplication index $q$ have a broader degree distribution and a smaller diameter. In contrast, networks with small $q$ tend to be closer to a linear chain. This observation suggests that the distinction between using $f={\max}$ or $f={\rm sum}$ is less relevant in complex networks with wide degree distributions and smaller diameter.  
 
 \begin{figure}[t]
 \includegraphics[width=3.3in]{fig.sigma_vs_sigma1.eps}
@@ -122,25 +125,24 @@ The picture changes when the activity durations follow a sub-exponential distrib
 \label{fig4}
 \end{figure}
 
-We have estimated $\sigma$ and $\sigma_1$ for the project warehouse of Nodes \& Links. For each project schedule in the warehouse we estimated $\sigma$ as the variance of the logarithm of reported delays (actual finish date $>$ planned finish date). We estimated $\sigma_1$ as the variance of activity durations. The data is shown in Fig. 4. In 78\% of projects $\sigma<\sigma_1$, the region where $f_{\max}$ is a good approximation to $f_{\rm sum}$. For these projects, we can use either $f_{\max}$ or $f_{\rm sum}$ and obtain similar results.
+We have estimated $\sigma$ and $\sigma_1$ for construction projects in the Nodes \& Links database. For each project schedule in the warehouse we estimated $\sigma$ as the variance of the logarithm of reported delays (actual finish date $-$ planned finish date). We estimated $\sigma_1$ as the variance of the logarithm of activity durations. In 78\% of projects $\sigma<\sigma_1$ (Fig. \ref{fig4}). For these projects, we can use either $f={\max}$ or $f={\rm sum}$ and obtain similar results.
 
-
-If $f(x,y)=\max(x,y)$ gives similar results to $f(x)=x+y$ then we can choose either. As shown below, using  $f(x,y)=\max(x,y)$ has some advantages. Let us explore the case $f(x,y)=\max(x,y)$. We can solve Eq. (\ref{forward_delay}) iteratively
+If using $f=\max(x,y)$ gives similar results as using $f={\rm sum}$ then we can choose either. As shown below, using  $f=\max$ has some advantages. For $f=\max$ we can solve Eq. (\ref{forward_delay}) iteratively
 %
 \begin{equation}
-z_{i,t+1} = \max\left[ \max_{j\in I_i} \max(z_{j,t} + w_{ij}), h_i\right]\ ,
+z_{i,t+1} = \max\left\{ \max_{j\in I_i}\left[ \max(0,w_{ij}+z_{j,t})\right] h_i\right\}\ ,
 \label{forward_delay_iter} 
 \end{equation}
 %
-with the initial condition $z_{i,0}=h_i$. Defining $w_{ii}=0$ we can rewrite the Eq. above using the more compact form
+Defining $w_{ii}=0$ we rewrite this equation as
 %
 \begin{equation}
-z_{i,t+1} = \max_{j|j\in I_i\cup\{i\}} ( z_{j,t} + w_{ij})\ .
+z_{i,t+1} = \max_{j|j\in I_i\cup\{i\}} (w_{ij}+z_{j,t})\ .
 \label{maxapp}
 \end{equation}
 %
-The shape of this equation calls for the max-plus algebra \cite{butkovic10}. The max-plus algebra is defined by the semiring $(\mathbf{R}\cup\{-\infty\},\oplus,\otimes)$ with the sum operation defined as
-$x\oplus y = \max(x,y)$ and the product as $x\otimes y = x+y$. The max-plus algebra has been used to investigate networks with cycles \cite{hei14}. For example, of transportation networks, where it is desired to have a route back and forward between any two nodes. Here the focus is on directed acyclic graphs. Using the max-plus algebra we rewrite  (\ref{maxapp}) as
+Replacing $\max$ by $\oplus$ and $+$ by $\otimes$ the tropical algebra becomes evident. The tropical algebra is defined by the semiring $(\mathbf{R}\cup\{-\infty\},\oplus,\otimes)$ with the sum operation defined as
+$x\oplus y = \max(x,y)$ and the product as $x\otimes y = x+y$ \cite{butkovic10}. The tropical algebra has been used to investigate networks with cycles \cite{hei14}. For example, of transportation networks, where it is desired to have a route back and forward between any two nodes. The tropical algebra has been applied to many other systems that can be mapped to event networks, including mRNA translation by ribosomes \cite{brackley12} and the  Conway’s Game of Life \cite{sakata20}. Using the tropical algebra we rewrite  (\ref{maxapp}) as
 %
 \begin{equation}
 \vec{z}_{t+1} = L\otimes \vec{z}_t\ ,
@@ -159,9 +161,8 @@ w_{ij} & {\rm if}\ j\in I_i\\
 \label{L}
 \end{equation}
 %
-is the local weights matrix. From now on we focus on the properties of $\vec{z}_t$ after several iterations of (\ref{maxplus}). The answer depends on what type of graph encodes the input sets 
-
-Project networks are represented by directed acyclic graphs. Therefore, there is no path larger than the graph diameter $D$. After $D$ iterations starting from $\vec{z}_0=\vec{h}$ the system will reach the steady state solution
+is the local weights matrix. $L$ encodes the free floats of direct relations, $L^{\otimes 2}$  the maximum free float sum of  paths up to length 2 and $L^{\otimes l}$  the maximum free float sum of paths up to length $l$. Since
+project networks are represented by directed acyclic graphs, there is no path larger than the graph diameter $D$. Therefore $L^{\otimes l}=L^{\otimes D}$ for $l\geq D$. After $D$ iterations starting from $\vec{z}_0=\vec{h}$ the system will reach the steady state solution
 %
 \begin{equation}
 \vec{z}_{\infty} = T\otimes \vec{h}\ ,
@@ -171,24 +172,31 @@ Project networks are represented by directed acyclic graphs. Therefore, there is
 where
 %
 \begin{equation}
-T = W^{\otimes D}\ ,
+T = L^{\otimes D}\ ,
 \label{T}
 \end{equation}
 %
-is the total float matrix. The element $-T_{ij}$ equals the maximum $h_i$ that yields $z_{j,\infty}=0$.
+is the total float matrix. The element $-T_{ij}$ equals the maximum $h_j$ that yields $z_{i,\infty}=0$.
 
-{\em Main result.} Calculating the cumulative distribution function for the delay at each activity is now straightforward. If $F_i(x)={\rm Pr}(h_i\leq x)$ and $G_i(x) = {\rm Pr}(z_{i,\infty}\leq x)$, then from Eq. (\ref{maxplus_oo}) we obtain
+Equation (\ref{maxplus_oo}) represents a principle of statistical independence of exogenous delays, in the tropical algebra sense. Each exogenous delay contributes independently of the others to the final propagated delay. This property is a direct consequence of the $f=\max$ merging function. Calculating the cumulative distribution function for the delay at each activity is now straightforward. Since exogenous delays are independent we calculate the maximum among the delay cascades propagated from each exogenous delay.  If $F_i(h)={\rm Pr}(h_i\leq h)$, $G_i(z) = {\rm Pr}(z_{i,\infty}\leq z)$ and $x_i$ is the early start date, then from Eq. (\ref{maxplus_oo}) we obtain the probability distributions for the activity end dates
 %
 \begin{equation}
-G_i(x) = \prod_{j} F_j(x+T_{ij})\ .
+G_i(y) = \prod_{j} F_j(y-x_i-T_{ij})\ .
 \label{CDF}
 \end{equation}
 %
+This equation represents an analytical approximation to the end date distribution of all activities in a project network. In this equation we have a clear separation between the influence of the distributions of exogenous delays $F_j(h)$, the planned end date $x_i$ and the activity network properties encoded in the total floats $T_{ij}$. From there we can calculate other relevant quantities. The probability to finish on time $G_i(0)$ and the end date $y_i(p)$ with $p$ confidence $G_i[y_i(p)]=p$. We can determine the impact of accelerating activity execution to catchup with delays as well, by taking into account that $T_{ij}=T_{ij}(\vec{d})$.
 
-The non-trivial region where $\max(x,y)$ is a good approximation to $x+y$ remains to be explained. Intuitively, if both the delays and the free floats have sub-exponential distributions, and we extract a delay and a free float from those distributions, then one of them will be much larger than the other with high probability. In that case, the delays that exceed the free floats will be large and $\max(x,y)$ is a good approximation for $x+y$.
+The non-trivial region where $f=\max$ is a good approximation to $f={\rm sum}$ remains to be explained. Intuitively, if both the delays and the free floats have sub-exponential distributions, and we extract a delay and a free float from those distributions, then one of them will be much larger than the other with high probability. In that case, the delays that exceed the free floats will be large and $f=\max$ is a good approximation for $f={\rm sum}$. More work is required to translate this intuition into analytical demonstrations.
+
+In conclusion, I have obtained a tropical approximation to the end date distribution of activity networks. This approximation replaces ${\rm sum}$ by $\max$ in the algebraic equations that merge endogenous with exogenous delays. The tropical approximation is close to simulated data when (i) both the distribution of exogenous delays and of activity durations belong to the sub-exponential family and (ii) the variance of the exogenous delays is smaller than the variance of the activity durations. These conditions are satisfied in 78\% of projects within the Nodes \& Links construction project database.
+
+I thank Christos Ellinas and Georgios Kalogridis for manuscript comments. This work was partly supported by European Union's Horizon 2020 and the Cyprus Research \& Innovation Foundation under the SEED program (grant agreement 0719(B)/0124). Nodes \& Links provided support in the form of salary for AV, but did not have any additional role in the study design, data collection and analysis, decision to publish, or preparation of the manuscript. 
 
 \bibliographystyle{apsrev4-1}
 
-\bibliography{maxplus.bib}
+%\bibliography{maxplus.bib}
+
+\bibliography{maxplus.bbl}
 
 \end{document}
