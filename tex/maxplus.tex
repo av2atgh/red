@@ -24,14 +24,6 @@ project finish time based on the activity durations and relations. However, adve
 
 \maketitle
 
-%\begin{figure}[t]
-%\includegraphics[width=5in]{auxo_fig_model.eps}
-%\caption{}
-%\label{fig_model}
-%\end{figure}
-
-%\section{Introduction}
-
 In recent years we have experienced a significant advance in our understanding of complex networks and of processes running on them \cite{albert02,dorogotsev08,pastor15}. Yet, we still lack an understanding of the interplay between network topology and dynamics in the context of activity networks. There is a vast literature on Monte Carlo simulations of activity networks under uncertainty and risk events \cite{acebes15,moret16}. The critical path method has been used to aggregate perturbations and derive an analytical approximation to the project end date distribution \cite{van13}. However, activity networks are characterised by a complex topology \cite{braha04,braha07,pozzana21} and activity delays exhibit a high frequency of extreme events \cite{pozzana21,araujo21,park21}. In that context the key conditions for the critical path method,  the existence of a dominant path from the project start to its end and the central limit theorem, do not apply. Here I obtain a tropical algebra approximation to the project end date.
 
 Let $P(V,E,\vec{d})$ be a project schedule with a set of activities $V$, a set of activity relations $E$ and a vector of activity durations $\vec{d}$. The project start and end are represented by the activities $i=1$ and $i=n$, respectively, of duration zero. An arc $i\rightarrow j\in E$ indicates that $i$ must finish before $j$ starts. I will denote the set of activity predecessors of $i$ by $I_i=\{j|j\rightarrow i\in E\}$. Logical consistence implies that the project network is a directed acyclic graph.  The nodes in a directed acyclic graph can be ordered topologically such that if $i\rightarrow j$ then $i$ is before $j$ in the topological order, for all $i\rightarrow j\in E$.
@@ -121,11 +113,11 @@ Regarding the network parameters, for a given number of activities, $S$ is close
 
 \begin{figure}[t]
 \includegraphics[width=3.3in]{fig.sigma_vs_sigma1.eps}
-\caption{Plot of $\sigma$ vs $\sigma_1$ for construction projects. Each symbol represents a construction project schedule. The shaded background highlights the area where $\sigma<\sigma_1$.}
+\caption{A) Plot of $\sigma$ vs $\sigma_1$ for construction projects. Each symbol represents a construction project schedule. The shaded background highlights the area where $\sigma<\sigma_1$. B) $f={\rm sum}$ vs $f=\max$ p80 forecast for real construction projects (circles). The dashed line represents equal values. The dashed-dotted line represents the best linear fit through the origin. The activity network and activity durations are from the real projects. The parameters of $p(h)\sim e^{-[log(h/\mu)]^2/2\sigma^2}/h$ are project specific and inferred from observed delays for finished activities (see $\sigma$ in panel A) .}
 \label{fig4}
 \end{figure}
 
-We have estimated $\sigma$ and $\sigma_1$ for construction projects in the Nodes \& Links database. For each project schedule in the warehouse we estimated $\sigma$ as the variance of the logarithm of reported delays (actual finish date $-$ planned finish date). We estimated $\sigma_1$ as the variance of the logarithm of activity durations. In 78\% of projects $\sigma<\sigma_1$ (Fig. \ref{fig4}). For these projects, we can use either $f={\max}$ or $f={\rm sum}$ and obtain similar results.
+We have estimated $\sigma$ and $\sigma_1$ for construction projects in the Nodes \& Links database. For each project schedule in the warehouse we estimated $\sigma$ as the variance of the logarithm of reported delays (actual finish date $-$ planned finish date). We estimated $\sigma_1$ as the variance of the logarithm of activity durations. In 78\% of projects $\sigma<\sigma_1$ (Fig. \ref{fig4}A). For these projects, we can use either $f={\max}$ or $f={\rm sum}$ and obtain similar results. To test this expectation we carried on Monte Carlo simulations on top of real construction projects (\ref{fig4}B). The slope of the forecasted p80s using $f={\rm sum}$ vs $f=\max$ is 1.6, in the range of what observed for synthetic networks in the region $\sigma<\sigma_1$ (\ref{fig3}).
 
 If using $f=\max(x,y)$ gives similar results as using $f={\rm sum}$ then we can choose either. As shown below, using  $f=\max$ has some advantages. For $f=\max$ we can solve Eq. (\ref{forward_delay}) iteratively
 %
@@ -187,7 +179,7 @@ G_i(y) = \prod_{j} F_j(y-x_i-T_{ij})\ .
 %
 This equation represents an analytical approximation to the end date distribution of all activities in a project network. In this equation we have a clear separation between the influence of the distributions of exogenous delays $F_j(h)$, the planned end date $x_i$ and the activity network properties encoded in the total floats $T_{ij}$. From there we can calculate other relevant quantities. The probability to finish on time $G_i(0)$ and the end date $y_i(p)$ with $p$ confidence $G_i[y_i(p)]=p$. We can determine the impact of accelerating activity execution to catchup with delays as well, by taking into account that $T_{ij}=T_{ij}(\vec{d})$.
 
-The non-trivial region where $f=\max$ is a good approximation to $f={\rm sum}$ remains to be explained. Intuitively, if both the delays and the free floats have sub-exponential distributions, and we extract a delay and a free float from those distributions, then one of them will be much larger than the other with high probability. In that case, the delays that exceed the free floats will be large and $f=\max$ is a good approximation for $f={\rm sum}$. More work is required to translate this intuition into analytical demonstrations.
+The non-trivial region where $f=\max$ is a good approximation to $f={\rm sum}$ remains to be explained. Intuitively, if both the delays and the free floats have sub-exponential distributions, and we extract a delay and a free float from those distributions, then one of them will be much larger than the other with high probability. In that case, the delays that exceed the free floats will be large and $f=\max$ is a good approximation for $f={\rm sum}$. More work is required to translate this intuition into analytical demonstrations. Furthermore, a delay in the activity start date could increase the delay in the activity finish date, above what expected if the activity start wasn't delayed (supper-additive). If the rate per activity of such events is large then we should expect a breakdown of the tropical approximation
 
 In conclusion, I have obtained a tropical approximation to the end date distribution of activity networks. This approximation replaces ${\rm sum}$ by $\max$ in the algebraic equations that merge endogenous with exogenous delays. The tropical approximation is close to simulated data when (i) both the distribution of exogenous delays and of activity durations belong to the sub-exponential family and (ii) the variance of the exogenous delays is smaller than the variance of the activity durations. These conditions are satisfied in 78\% of projects within the Nodes \& Links construction project database.
 
