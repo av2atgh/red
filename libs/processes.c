@@ -77,6 +77,7 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 			j=(*dinet).arc[r].succ;
 			(*dinet).arc[r].value=late[j]-(*dinet).node[i].value;
 		}
+		for (i=0;i<n;i++) (*dinet).node[i].total_float = late[i] - (*dinet).node[i].value;
 		free(late);
 	}
 	else {

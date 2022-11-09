@@ -25,7 +25,8 @@ float slope(unsigned long n, double *x, double *y) {
 		sxx+=x[i]*x[i];
 		sxy+=x[i]*y[i];
 	}
-	return (float)(sxy/sxx);
+	if (sxx==0) return 1.0;
+	else return (float)(sxy/sxx);
 }
 
 float p80(unsigned long n, double *x) {
@@ -37,6 +38,16 @@ float p80(unsigned long n, double *x) {
 	float p80=z[n80];
 	free(z);
 	return p80;
+}
+
+float blacswan(struct dinet_class *dinet) {
+	unsigned long i, n=(*dinet).n_nodes;
+	double excess_value0, max = 0;
+	for (i=0;i<n;i++) {
+		excess_value0 = (*dinet).node[i].value0 - (*dinet).node[i].total_float;
+		if (excess_value0>max) max=excess_value0;
+	}
+	return max;
 }
 
 int main(int argc, char **argv) {
@@ -78,6 +89,7 @@ int main(int argc, char **argv) {
 	double *y=(double *)malloc(sum*sizeof(double));
 	double *z=(double *)malloc(sum*sizeof(double));
 	unsigned long sum_=n_nets*n_avs;
+	double *b=(double *)malloc(n_nets*n_avs*n_nvs*sizeof(double));
 	double *y_=(double *)malloc(n_nets*n_avs*sizeof(double));
 	double *z_=(double *)malloc(n_nets*n_avs*sizeof(double));
 	double *y__=(double *)malloc(n_nvs*sizeof(double));
@@ -97,6 +109,8 @@ int main(int argc, char **argv) {
 				z[i]=processes_ouput_max_from_out_degree_0(&dinet);
 				y__[i__]=y[i];
 				z__[i__]=z[i];
+				b[i]=blacswan(&dinet);
+printf("%f\t%f\t%f\n",b[i], y[i], z[i]);
 				i++;
 				i__++;
 			}
@@ -107,11 +121,12 @@ int main(int argc, char **argv) {
 		free_dinet(&dinet);
 	}
 	FILE *file=fopen(fileoutput,"wt");
-	fprintf(file,"%s,%f,%f,%s,%f,%f,%lu,%f,%f,%f,%f,%f\n",arc_distribution,arc_p1,arc_p2,node_distribution,node_p1,node_p2,n_nodes,duplication_rate,slope(sum,x,y),variance(sum,x),slope(sum,z,y),slope(sum_,z_,y_));
+	fprintf(file,"%s,%f,%f,%s,%f,%f,%lu,%f,%f,%f,%f,%f,%f\n",arc_distribution,arc_p1,arc_p2,node_distribution,node_p1,node_p2,n_nodes,duplication_rate,slope(sum,x,y),variance(sum,x),slope(sum,z,y),slope(sum_,z_,y_),slope(sum,b,y));
 	fclose(file);
 	free(x);
 	free(y);
 	free(z);
+	free(b);
 	free(y_);
 	free(z_);
 	free(y__);
