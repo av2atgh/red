@@ -21,6 +21,9 @@ struct dinode_class {
 	unsigned long generation;
 	double value0;
 	double value;
+	double dvalue0;
+	double dvalue;
+	double total_float;
 };
 
 struct arc_class {
@@ -36,6 +39,7 @@ struct dinet_class {
 	struct dinode_class *node;
 	struct arc_class *arc;
 	unsigned long *ordering;
+	double value;
 };
 
 // // functions

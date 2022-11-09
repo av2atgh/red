@@ -40,12 +40,12 @@ float p80(unsigned long n, double *x) {
 	return p80;
 }
 
-float blacswan(struct dinet_class *dinet) {
+double blacswan(struct dinet_class *dinet) {
 	unsigned long i, n=(*dinet).n_nodes;
-	double excess_value0, max = 0;
+	double excess_dvalue0, max=0.0;
 	for (i=0;i<n;i++) {
-		excess_value0 = (*dinet).node[i].value0 - (*dinet).node[i].total_float;
-		if (excess_value0>max) max=excess_value0;
+		excess_dvalue0 = (*dinet).node[i].dvalue0 - (*dinet).node[i].total_float;
+		if (excess_dvalue0>max) max=excess_dvalue0;
 	}
 	return max;
 }
@@ -103,13 +103,13 @@ int main(int argc, char **argv) {
 			i__=0;
 			for (nv=0;nv<n_nvs;nv++) {
 				x[i]=processes_node_values(&dinet,node_distribution,node_p1,node_p2,(nv+1)*seed);
+				b[i]=blacswan(&dinet);
 				processes_summax(&dinet,propagator);
-				y[i]=processes_ouput_max_from_out_degree_0(&dinet);
+				y[i]=project_dvalue(&dinet);
 				processes_summax(&dinet,"maxmax");
-				z[i]=processes_ouput_max_from_out_degree_0(&dinet);
+				z[i]=project_dvalue(&dinet);
 				y__[i__]=y[i];
 				z__[i__]=z[i];
-				b[i]=blacswan(&dinet);
 printf("%f\t%f\t%f\n",b[i], y[i], z[i]);
 				i++;
 				i__++;

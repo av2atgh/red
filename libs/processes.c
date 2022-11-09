@@ -6,19 +6,19 @@ float processes_node_values(struct dinet_class *dinet, char *load_distribution, 
 	unsigned long i,n=(*dinet).n_nodes;
 	if (strcmp(load_distribution,"exponential")==0) {
 		float mu=p1;
-		for (i=0;i<n;i++) (*dinet).node[i].value0=-(mu*log(ran2(&seed)));
+		for (i=0;i<n;i++) (*dinet).node[i].dvalue0=-(mu*log(ran2(&seed)));
 	}
 	else if (strcmp(load_distribution,"lognormal")==0) {
 		float mu=p1;
 		float sigma=p2;
-		for (i=0;i<n;i++) (*dinet).node[i].value0=exp(mu+sigma*rand_normal(&seed));
+		for (i=0;i<n;i++) (*dinet).node[i].dvalue0=exp(mu+sigma*rand_normal(&seed));
 	}
 	else {
 		printf("warning,distribution not found,exit\n");
 		exit(1);
 	}
 	float max=0.0;
-	for (i=0;i<n;i++) if ((*dinet).node[i].value0>max) max=(*dinet).node[i].value0;
+	for (i=0;i<n;i++) if ((*dinet).node[i].dvalue0>max) max=(*dinet).node[i].dvalue0;
 	printf("function,processes_node_values,end\n");
 	return max;
 }
@@ -31,7 +31,7 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 	if (strcmp(mode,"scheduling")==0) {
 		// assign node durations
 		if (strcmp(load_distribution,"zero")==0) {
-			for (i=0;i<n;i++) (*dinet).node[i].value=(*dinet).node[i].value0=0.0;
+			for (i=0;i<n;i++) (*dinet).node[i].value0=0.0;
 		}
 		else if (strcmp(load_distribution,"exponential")==0) {
 			float mu=p1;
@@ -48,7 +48,7 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 		}
 		// forward pass to assign early finish
 		for (i=0;i<n;i++) (*dinet).node[i].value=(*dinet).node[i].value0;
-		float pass;
+		double pass;
 		for (o=0;o<n;o++) {
 			i=(*dinet).ordering[o];
 			for (l=0;l<(*dinet).node[i].ou_degree;l++) {
@@ -59,9 +59,10 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 			}
 		}
 		// backward pass to assign late finish
-		float max=0.0;
+		double max=0.0;
 		for (i=0;i<n;i++) if ((*dinet).node[i].value>max) max=(*dinet).node[i].value;
-		float *late=(float *)malloc(n*sizeof(float));
+		(*dinet).value=max;
+		double *late=(double *)malloc(n*sizeof(double));
 		for (i=0;i<n;i++) late[i]=max;
 		for (o=0;o<n;o++) {
 			i=(*dinet).ordering[n-1-o];
@@ -117,23 +118,23 @@ void processes_summax(struct dinet_class *dinet, char *use_rule) {
 	}
 	float pass;
 	unsigned long o,i,j,l,r,n=(*dinet).n_nodes;
-	for (i=0;i<n;i++) (*dinet).node[i].value=(*dinet).node[i].value0;
+	for (i=0;i<n;i++) (*dinet).node[i].dvalue=(*dinet).node[i].dvalue0;
 	for (o=0;o<n;o++) {
 		i=(*dinet).ordering[o];
 		for (l=0;l<(*dinet).node[i].ou_degree;l++) {
 			r=(*dinet).node[i].ou_arc[l];
 			j=(*dinet).arc[r].succ;
-			pass=(*dinet).node[i].value-(*dinet).arc[r].value;
+			pass=(*dinet).node[i].dvalue-(*dinet).arc[r].value;
 			if (pass>0) switch (rule) {
 				case SUMSUM:
-					(*dinet).node[j].value+=pass/(*dinet).node[j].in_degree;
+					(*dinet).node[j].dvalue+=pass/(*dinet).node[j].in_degree;
 					break;
 				case MAXSUM:
-					pass+=(*dinet).node[j].value0;
-					if (pass>(*dinet).node[j].value) (*dinet).node[j].value=pass;
+					pass+=(*dinet).node[j].dvalue0;
+					if (pass>(*dinet).node[j].dvalue) (*dinet).node[j].dvalue=pass;
 					break;
 				case MAXMAX:
-					if (pass>(*dinet).node[j].value) (*dinet).node[j].value=pass;
+					if (pass>(*dinet).node[j].dvalue) (*dinet).node[j].dvalue=pass;
 					break;
 			}
 		}
@@ -145,12 +146,15 @@ void processes_summax(struct dinet_class *dinet, char *use_rule) {
 #undef MAXSUM
 #undef MAXMAX
 
-float processes_ouput_max_from_out_degree_0(struct dinet_class *dinet) {
-	printf("function,processes_ouput_max_from_out_degree_0,start\n");
+double project_dvalue(struct dinet_class *dinet) {
+	printf("function,project_dvalue,start\n");
 	unsigned long i,n=(*dinet).n_nodes;
-	float max=0.0;
-	for (i=0;i<n;i++) if ((*dinet).node[i].ou_degree==0 && (*dinet).node[i].value>max) max=(*dinet).node[i].value;
-	printf("function,processes_ouput_max_from_out_degree_0,end\n");
-	return max;
+	double value,max=0.0;
+	for (i=0;i<n;i++) {
+		value=(*dinet).node[i].value+(*dinet).node[i].dvalue;
+		if (value>max) max=value;
+	}
+	printf("function,project_dvalue,end\n");
+	return max-(*dinet).value;
 } 
 	
