@@ -68,14 +68,35 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 			for (l=0;l<(*dinet).node[i].in_degree;l++) {
 				r=(*dinet).node[i].in_arc[l];
 				j=(*dinet).arc[r].pred;
-				pass=(*dinet).node[i].value-(*dinet).node[i].value0;
+				//
+				// 1st bug here
+				//
+				// previous version
+				//
+				//	pass=(*dinet).node[i].value-(*dinet).node[i].value0;
+				//
+				// current version
+				//
+				pass=late[i]-(*dinet).node[i].value0;
 				if (pass<late[j]) late[j]=pass;
 			}
 		}
+		double early_finish_pred, early_start_succ;
 		for (r=0;r<m;r++) {
 			i=(*dinet).arc[r].pred;
 			j=(*dinet).arc[r].succ;
-			(*dinet).arc[r].value=late[j]-(*dinet).node[i].value;
+			//
+			// 2nd bug here
+			//
+			// previous version
+			//
+			//	(*dinet).arc[r].value=late[j]-(*dinet).node[i].value;
+			//
+			// current version
+			//
+			early_finish_pred=(*dinet).node[i].value;
+			early_start_succ=(*dinet).node[j].value-(*dinet).node[j].value0;
+			(*dinet).arc[r].value=early_start_succ-early_finish_pred;
 		}
 		free(late);
 	}
