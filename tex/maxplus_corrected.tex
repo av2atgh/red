@@ -106,7 +106,7 @@ Since $x+y\geq\max(x,y)$ then $S\geq1$.
 \end{figure}
 
 If we set activity durations to zero we can investigate $\max$ vs ${\rm sum}$ without the additional complication of free floats. Given the log-normal $p(h)\sim e^{-[log(h/\mu)]^2/2\sigma^2}/h$, we expect $S\rightarrow1$ when $\sigma\rightarrow\infty$. This asymptotic behavior is corroborated in Fig. \ref{fig1}.
-The same behavior is obtained when the activity durations follow a sub-exponential distribution as well. For example, a log-normal distribution $p(d)\sim e^{-[log(d/\mu_1)]^2/2\sigma_1^2}/d$. I will set $\mu_1=1$ since $\sigma_1$ controls the shape of the distribution tail. Setting $\sigma_1=1$ and $\sigma=3$ we obtain the plots in Figs. \ref{fig2} and \ref{fig3} respectively. The asymptotic behavior $S\rightarrow1$ when $\sigma\rightarrow\infty$ is corroborated.
+The same behavior is obtained when the activity durations follow a sub-exponential distribution as well. For example, a log-normal distribution $p(d)\sim e^{-[log(d/\mu_1)]^2/2\sigma_1^2}/d$. I will set $\mu_1=1$ since $\sigma_1$ controls the shape of the distribution tail. Setting $\sigma_1=1$ and $\sigma_1=3$ we obtain the plots in Figs. \ref{fig2} and \ref{fig3} respectively. The asymptotic behavior $S\rightarrow1$ when $\sigma\rightarrow\infty$ is corroborated.
 
 Regarding the network parameters, for a given number of activities, $S$ is closer to 1 for $q=0.4$ than $q=0.1$. The networks with larger duplication index $q$ have a broader degree distribution and a smaller diameter. In contrast, networks with small $q$ tend to be closer to a linear chain. This observation suggests that the distinction between using $f={\max}$ or $f={\rm sum}$ is less relevant in complex networks with wide degree distributions and smaller diameter.  
 
@@ -180,7 +180,7 @@ This equation represents an analytical approximation to the end date distributio
 
 The non-trivial region where $f=\max$ is a good approximation to $f={\rm sum}$ remains to be explained. Intuitively, if both the delays and the free floats have sub-exponential distributions, and we extract a delay and a free float from those distributions, then one of them will be much larger than the other with high probability. In that case, the delays that exceed the free floats will be large and $f=\max$ is a good approximation for $f={\rm sum}$. More work is required to translate this intuition into analytical demonstrations. Furthermore, a delay in the activity start date could increase the delay in the activity finish date, above what expected if the activity start wasn't delayed (supper-additive). If the rate per activity of such events is large then we should expect a breakdown of the tropical approximation
 
-In conclusion, I have obtained a tropical approximation to the end date distribution of activity networks. This approximation replaces ${\rm sum}$ by $\max$ in the algebraic equations that merge endogenous with exogenous delays. The tropical approximation is close to simulated data when (i) both the distribution of exogenous delays and of activity durations belong to the sub-exponential family and (ii) the variance of the exogenous delays is larger than 1. We found that the tropical approximation is a good bound when tested in the Nodes \& Links construction project database.
+In conclusion, I have obtained a tropical approximation to the end date distribution of activity networks. This approximation replaces ${\rm sum}$ by $\max$ in the algebraic equations that merge endogenous with exogenous delays. The tropical approximation is close to simulated data when (i) the distribution of exogenous delays belongs to the sub-exponential family and (ii) the variance of the exogenous delays is larger than 1. We found that the tropical approximation is a good bound when tested in the Nodes \& Links construction project database.
 
 I thank Christos Ellinas and Georgios Kalogridis for manuscript comments. This work was partly supported by European Union's Horizon 2020 and the Cyprus Research \& Innovation Foundation under the SEED program (grant agreement 0719(B)/0124). Nodes \& Links provided support in the form of salary for AV, but did not have any additional role in the study design, data collection and analysis, decision to publish, or preparation of the manuscript. 
 
@@ -188,6 +188,6 @@ I thank Christos Ellinas and Georgios Kalogridis for manuscript comments. This w
 
 %\bibliography{maxplus.bib}
 
-\bibliography{maxplus.bbl}
+\bibliography{maxplus_corrected.bbl}
 
 \end{document}

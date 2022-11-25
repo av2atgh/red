@@ -1,1 +1,1 @@
-zip maxplus_v2.zip maxplus_corrected.tex maxsum.scheduling.dupsplit.arc_distribution_zero.eps maxsum.scheduling.dupsplit.arc_distribution_lognormal.arc_sigma_1.eps maxsum.scheduling.dupsplit.arc_distribution_lognormal.arc_sigma_3.eps fig.sigma_vs_sigma1.eps
+zip maxplus_v2.zip maxplus_corrected.tex maxplus_corrected.bbl maxsum.scheduling.dupsplit.arc_distribution_zero.eps maxsum.scheduling.dupsplit.arc_distribution_lognormal.arc_sigma_1.eps maxsum.scheduling.dupsplit.arc_distribution_lognormal.arc_sigma_3.eps fig.sigma_vs_sigma1.eps
