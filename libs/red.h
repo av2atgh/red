@@ -33,6 +33,8 @@ struct dinet_class {
 	char name[500];
 	unsigned long n_nodes;
 	unsigned long n_arcs;
+	float q_ou;
+	float q_in;
 	struct dinode_class *node;
 	struct arc_class *arc;
 	unsigned long *ordering;
