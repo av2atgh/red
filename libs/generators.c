@@ -1,4 +1,3 @@
-#include "red.h"
 #include "generators.h"
 
 void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nodes, float duplication_rate, long seed0) {

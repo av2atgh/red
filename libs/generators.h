@@ -1,6 +1,7 @@
 #ifndef _GENERATOR_H_
 #define _GENERATOR_H_
 
+#include "red.h"
 #include "rand.h"
 
 // // flags

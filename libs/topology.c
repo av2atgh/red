@@ -1,5 +1,50 @@
 #include "topology.h"
 
+void components(struct dinet_class *dinet, float p_site, long seed, unsigned long *components_size) {
+	//
+	// first pass to map nodes to boxes
+	//
+	unsigned long n=(*dinet).n_nodes;
+	unsigned long *list = (unsigned long *)malloc(n*sizeof(long));
+	unsigned long *component=(unsigned long *)malloc(n*sizeof(long));
+	unsigned long i,j,k,l,first,last,o,r,n_components=0;
+	for (i=0;i<n;i++) {
+		component[i]=n;
+		components_size[i]=0;
+	}
+	char *site = (char *)malloc(n*sizeof(char));
+	for (i=0;i<n;i++) site[i]=(p_site==1 || ran2(&seed)<p_site)?1:0;
+	for (o=0;o<n;o++) if (component[(*dinet).ordering[o]]==n) {
+		i=(*dinet).ordering[o];
+		if (site[i]==1) {
+			component[i]=n_components;
+			components_size[n_components]=1;
+			first=0;
+			last=1;
+			list[first]=i;
+			while (last>first) {
+				j=list[first];
+				first++;
+				for (l=0;l<(*dinet).node[j].ou_degree;l++) {
+					r=(*dinet).node[j].ou_arc[l];
+					k=(*dinet).arc[r].succ;
+					if (site[k]==1 && component[k]==n) {
+						component[k]=n_components;
+						components_size[n_components]++;
+						list[last]=k;
+						last++;
+					}
+				}
+			}
+			n_components++;
+		}
+	}
+	free(site);
+	free(list);
+	free(component);
+	return;
+}
+
 unsigned long one_step_renormalization(struct dinet_class *dinet, unsigned long box_size, struct dinet_class *dinet_b) {
 	//
 	// first pass to map nodes to boxes
@@ -99,7 +144,9 @@ unsigned long average_number_of_nodes_by_distance(struct dinet_class *dinet, flo
 		nodes_at_distance_array[i]=0;
 		visited[i]=n;
 	}
-	for (i=0;i<n;i++) {
+	unsigned long n_roots=0;
+	for (i=0;i<n;i++) if ((*dinet).node[i].in_degree==0) {
+		n_roots++;
 		first=0;
 		last=1;
 		list[first]=i;
@@ -123,8 +170,10 @@ unsigned long average_number_of_nodes_by_distance(struct dinet_class *dinet, flo
 			}
 		}
 	}
+        for (i=0;i<n;i++) nodes_at_distance_array[i]/=n_roots;
 	free(list);
 	free(distance);
+	free(visited);
 	return diameter;
 }
 

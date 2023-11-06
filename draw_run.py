@@ -19,9 +19,10 @@ def real_graph(name):
 #real_graph(168)
 #real_graph("real_0")
 
-real_graph("real_160")
-real_graph("real_195")
+#real_graph("real_160")
+#real_graph("real_195")
 #real_graph("dupsplit_q0.10_n100")
 #real_graph("dupsplit_q0.30_n100")
 #real_graph("dupsplit_q0.50_n100")
+real_graph("dupsplit_q0.60_n100")
 

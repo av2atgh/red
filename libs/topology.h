@@ -2,6 +2,7 @@
 #define _TOPOLOGY_H_
 
 #include "red.h"
+#include "rand.h"
 
 // // flags
 
@@ -9,6 +10,7 @@
 
 // // functions
 
+extern void components(struct dinet_class *dinet, float p_site, long seed, unsigned long *components_size);
 extern void topology_ordering_topological(struct dinet_class *dinet);
 extern void topology_generation(struct dinet_class *dinet);
 extern unsigned long average_number_of_nodes_by_distance(struct dinet_class *dinet, float *nodes_at_distance_array);
