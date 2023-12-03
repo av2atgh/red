@@ -21,8 +21,9 @@ TARGET5 = io
 DUPSPLIT = dupsplit
 REAL = real
 DUPSPLIT_SITE_PERCOLATION = dupsplit_site_percolation
+DUPSPLIT_GENERATION = dupsplit_generation
 
-all: $(TARGET1) $(TARGET2) $(TARGET3) $(TARGET4) $(TARGET5) $(DUPSPLIT) $(REAL) $(DUPSPLIT_SITE_PERCOLATION)
+all: $(TARGET1) $(TARGET2) $(TARGET3) $(TARGET4) $(TARGET5) $(DUPSPLIT) $(REAL) $(DUPSPLIT_SITE_PERCOLATION) $(DUPSPLIT_GENERATION)
 
 $(TARGET1):
 	$(CC) $(CFLAGS) -o $(TARGET1).o -c $(SRC)/$(TARGET1).c
@@ -48,5 +49,8 @@ $(REAL): red.o rand.o io.o topology.o
 $(DUPSPLIT_SITE_PERCOLATION): red.o rand.o generators.o topology.o
 	$(CC) $(CFLAGS) -o $@ $@.c red.o rand.o generators.o topology.o
 
+$(DUPSPLIT_GENERATION): red.o rand.o generators.o topology.o
+	$(CC) $(CFLAGS) -o $@ $@.c red.o rand.o generators.o topology.o
+
 clean:
-	$(RM) $(TARGET1) $(TARGET2) $(TARGET3) $(TARGET4) $(TARGET5) $(DUPSPLIT) $(REAL) $(DUPSPLIT_SITE_PERCOLATION)
+	$(RM) $(TARGET1) $(TARGET2) $(TARGET3) $(TARGET4) $(TARGET5) $(DUPSPLIT) $(REAL) $(DUPSPLIT_SITE_PERCOLATION) $(DUPSPLIT_GENERATION)

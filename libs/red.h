@@ -19,6 +19,8 @@ struct dinode_class {
 	unsigned long *ou_arc;
 	unsigned long ordering;
 	unsigned long generation;
+        double total_float;
+        double duration;
 	double value0;
 	double value;
 };

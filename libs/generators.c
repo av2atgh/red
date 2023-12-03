@@ -16,12 +16,14 @@ void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nod
 	(*dinet).node[0].in_arc=(unsigned long *)malloc((*dinet).node[0].in_degree*sizeof(long));
 	(*dinet).node[0].ou_arc=(unsigned long *)malloc((*dinet).node[0].ou_degree*sizeof(long));
 	(*dinet).node[0].ou_arc[0]=0;
+        (*dinet).node[0].duration=1.0;
 
 	(*dinet).node[1].in_degree=1;
 	(*dinet).node[1].ou_degree=0;
 	(*dinet).node[1].in_arc=(unsigned long *)malloc((*dinet).node[1].in_degree*sizeof(long));
 	(*dinet).node[1].ou_arc=(unsigned long *)malloc((*dinet).node[1].ou_degree*sizeof(long));
 	(*dinet).node[1].in_arc[0]=0;
+        (*dinet).node[1].duration=0.0;
 
 	(*dinet).arc[0].pred=0;
 	(*dinet).arc[0].succ=1;
@@ -84,6 +86,9 @@ void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nod
 			(*dinet).arc[n_arcs].succ=i;
 			n_arcs++;
 		}
+                // durations dynamics
+		(*dinet).node[i].duration=(*dinet).node[j].duration*ran2(&seed);
+                (*dinet).node[j].duration-=(*dinet).node[i].duration;
 	}
 
 	(*dinet).n_nodes=n_nodes;

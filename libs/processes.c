@@ -42,6 +42,9 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 			float sigma=p2;
 			for (i=0;i<n;i++) (*dinet).node[i].value0=exp(mu+sigma*rand_normal(&seed));
 		}
+		else if (strcmp(load_distribution,"given")==0) {
+			printf("info, using given durations\n");
+		}
 		else {
 			printf("warning,distribution not found,exit\n");
 			exit(1);
@@ -72,10 +75,15 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 				if (pass<late[j]) late[j]=pass;
 			}
 		}
+                // free floats on edges
 		for (r=0;r<m;r++) {
 			i=(*dinet).arc[r].pred;
 			j=(*dinet).arc[r].succ;
 			(*dinet).arc[r].value=late[j]-(*dinet).node[i].value;
+		}
+                // total float on nodes
+                for (i=0;i<n;i++) {
+			(*dinet).node[i].total_float=late[i]-(*dinet).node[i].value; 
 		}
 		free(late);
 	}
