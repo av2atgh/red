@@ -10,6 +10,6 @@
 
 // // functions
 
-extern void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nodes, float duplication_rate, long seed0);
+extern void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nodes, float duplication_rate, long seed0, float dmin);
 
 #endif

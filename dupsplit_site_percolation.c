@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 	float smean,smax,mean_component_size[NBINS], mean_max_component_size[NBINS];
 	for (b=0;b<n_bins;b++) mean_component_size[b]=mean_max_component_size[b]=0;
 	for (net=0;net<n_nets;net++) {
-		generators_duplication_split(&dinet,n_nodes,duplication_rate,(net+1)*seed);
+		generators_duplication_split(&dinet,n_nodes,duplication_rate,(net+1)*seed,0.0);
 		topology_ordering_topological(&dinet);
 		for (b=0;b<n_bins;b++) {
 			p_site = 0.01 + 0.99*(float)b/(n_bins-1);

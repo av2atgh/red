@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 	float x,y,xx,xy,mass,slope,slope_ave_1=0.0,slope_ave_2=0.0;
 	char fileoutput_edgelist[500];
 	for (net=0;net<n_nets;net++) {
-		generators_duplication_split(&dinet,n_nodes,duplication_rate,(net+1)*seed);
+		generators_duplication_split(&dinet,n_nodes,duplication_rate,(net+1)*seed,0.0);
 //		if (net==0) {
 //			sprintf(fileoutput_edgelist,"data/dupsplit_q%.2f_n%lu_edge_list.csv",duplication_rate,n_nodes);
 //			write_edgelist(&dinet,fileoutput_edgelist);

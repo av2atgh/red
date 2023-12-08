@@ -43,6 +43,7 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 			for (i=0;i<n;i++) (*dinet).node[i].value0=exp(mu+sigma*rand_normal(&seed));
 		}
 		else if (strcmp(load_distribution,"given")==0) {
+			for (i=0;i<n;i++) (*dinet).node[i].value0=(*dinet).node[i].duration;
 			printf("info, using given durations\n");
 		}
 		else {
@@ -64,7 +65,7 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 		// backward pass to assign late finish
 		float max=0.0;
 		for (i=0;i<n;i++) if ((*dinet).node[i].value>max) max=(*dinet).node[i].value;
-		float *late=(float *)malloc(n*sizeof(float));
+		float *late=(double *)malloc(n*sizeof(double));
 		for (i=0;i<n;i++) late[i]=max;
 		for (o=0;o<n;o++) {
 			i=(*dinet).ordering[n-1-o];

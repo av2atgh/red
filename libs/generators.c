@@ -1,9 +1,10 @@
 #include "generators.h"
 
-void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nodes, float duplication_rate, long seed0) {
+void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nodes, float duplication_rate, long seed0, float dmin) {
 	printf("function,generators_duplication_split,start\n");
 	unsigned long n_arcs=1;
 	float dup=duplication_rate;
+        float dmin2=2*dmin;
 	long seed=seed0;
 
 	// initialize
@@ -16,24 +17,33 @@ void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nod
 	(*dinet).node[0].in_arc=(unsigned long *)malloc((*dinet).node[0].in_degree*sizeof(long));
 	(*dinet).node[0].ou_arc=(unsigned long *)malloc((*dinet).node[0].ou_degree*sizeof(long));
 	(*dinet).node[0].ou_arc[0]=0;
-        (*dinet).node[0].duration=1.0;
+        (*dinet).node[0].duration=0.5;
 
 	(*dinet).node[1].in_degree=1;
 	(*dinet).node[1].ou_degree=0;
 	(*dinet).node[1].in_arc=(unsigned long *)malloc((*dinet).node[1].in_degree*sizeof(long));
 	(*dinet).node[1].ou_arc=(unsigned long *)malloc((*dinet).node[1].ou_degree*sizeof(long));
 	(*dinet).node[1].in_arc[0]=0;
-        (*dinet).node[1].duration=0.0;
+        (*dinet).node[1].duration=0.5;
 
 	(*dinet).arc[0].pred=0;
 	(*dinet).arc[0].succ=1;
 
+	unsigned long *available=(unsigned long *)malloc(n_nodes*sizeof(long));
+        unsigned long n_available=2;
+        available[0]=0;
+        available[1]=1;
+
 	// grow
 
-	unsigned long i,j,k,l,r,delta_r;
+	unsigned long i,j,k,l,r,delta_r,a;
 
-	for (i=2;i<n_nodes;i++) {
-		j=i*ran2(&seed);
+	i=2;
+	while (i<n_nodes && n_available>0) {
+//	for (i=2;i<n_nodes;i++) {
+//		j=i*ran2(&seed);
+                a=n_available*ran2(&seed);
+                j=available[a];
 		if (ran2(&seed)<dup) {
 			// duplication
 			(*dinet).node[i].in_degree=(*dinet).node[j].in_degree;
@@ -87,8 +97,19 @@ void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nod
 			n_arcs++;
 		}
                 // durations dynamics
-		(*dinet).node[i].duration=(*dinet).node[j].duration*ran2(&seed);
-                (*dinet).node[j].duration-=(*dinet).node[i].duration;
+//		(*dinet).node[i].duration=(*dinet).node[j].duration*ran2(&seed);
+//		(*dinet).node[j].duration-=(*dinet).node[i].duration;
+		(*dinet).node[i].duration=(*dinet).node[j].duration/2;
+		(*dinet).node[j].duration=(*dinet).node[j].duration/2;
+		if ((*dinet).node[i].duration>=dmin2) {
+			available[n_available]=i;
+			n_available++;
+		}
+		if ((*dinet).node[j].duration<dmin2) {
+			available[a]=available[n_available-1];
+			n_available--;
+		}
+		i++;
 	}
 
 	(*dinet).n_nodes=n_nodes;
@@ -100,6 +121,7 @@ void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nod
 		(unsigned long)(-seed0)
 	);
 
+	free(available);
 
 	printf("function,generators_duplication_split,end\n");
 	return;
