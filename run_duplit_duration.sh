@@ -1,7 +1,8 @@
-./dupsplit_generation -n_nodes 1000000 -duplication_rate 0.1 -n_nets 10 -dmean 30
-./dupsplit_generation -n_nodes 1000000 -duplication_rate 0.2 -n_nets 10 -dmean 30
-./dupsplit_generation -n_nodes 1000000 -duplication_rate 0.3 -n_nets 10 -dmean 30
-./dupsplit_generation -n_nodes 1000000 -duplication_rate 0.4 -n_nets 10 -dmean 30
-./dupsplit_generation -n_nodes 1000000 -duplication_rate 0.5 -n_nets 10 -dmean 30
-./dupsplit_generation -n_nodes 1000000 -duplication_rate 0.6 -n_nets 10 -dmean 30
+NNETS=1
+NNODES=1000000
+for Q in 0.1 0.2 0.3 0.4 0.5 0.6
+do
+	./dupsplit_generation -n_nodes $NNODES -duplication_rate $Q -n_nets $NNETS -duration_dist "constant"
+	./dupsplit_generation -n_nodes $NNODES -duplication_rate $Q -n_nets $NNETS
+done
 

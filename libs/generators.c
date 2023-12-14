@@ -4,7 +4,6 @@ void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nod
 	printf("function,generators_duplication_split,start\n");
 	unsigned long n_arcs=1;
 	float dup=duplication_rate;
-        float dmin2=2*dmin;
 	long seed=seed0;
 
 	// initialize
@@ -98,19 +97,19 @@ void generators_duplication_split(struct dinet_class *dinet, unsigned long n_nod
 		}
                 // durations dynamics
 //		(*dinet).node[i].duration=(*dinet).node[j].duration*ran2(&seed);
-//		(*dinet).node[j].duration-=(*dinet).node[i].duration;
-		(*dinet).node[i].duration=(*dinet).node[j].duration/2;
-		(*dinet).node[j].duration=(*dinet).node[j].duration/2;
-		if ((*dinet).node[i].duration>=dmin2) {
+                (*dinet).node[i].duration=0.5*(*dinet).node[j].duration;
+		(*dinet).node[j].duration-=(*dinet).node[i].duration;
+		if ((*dinet).node[i].duration>=dmin) {
 			available[n_available]=i;
 			n_available++;
 		}
-		if ((*dinet).node[j].duration<dmin2) {
+		if ((*dinet).node[j].duration<dmin) {
 			available[a]=available[n_available-1];
 			n_available--;
 		}
 		i++;
 	}
+        printf("%lu\n",n_available);
 
 	(*dinet).n_nodes=n_nodes;
 	(*dinet).n_arcs=n_arcs;

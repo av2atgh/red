@@ -33,6 +33,9 @@ void processes_arc_values(struct dinet_class *dinet, char *load_distribution, fl
 		if (strcmp(load_distribution,"zero")==0) {
 			for (i=0;i<n;i++) (*dinet).node[i].value=(*dinet).node[i].value0=0.0;
 		}
+		else if (strcmp(load_distribution,"constant")==0) {
+			for (i=0;i<n;i++) (*dinet).node[i].value=(*dinet).node[i].value0=1.0;
+		}
 		else if (strcmp(load_distribution,"exponential")==0) {
 			float mu=p1;
 			for (i=0;i<n;i++) (*dinet).node[i].value0=-(mu*log(ran2(&seed)));
