@@ -2,6 +2,7 @@
 #   script to generate figures
 #
 
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -12,6 +13,10 @@ from scipy.optimize import fsolve
 from statistics import mode, mean
 import warnings
 warnings.filterwarnings("ignore")
+
+local_file = os.path.realpath(__file__)
+red = local_file.find("red") - 1
+local = os.path.join(local_file[:red], "red")
 
 colors = ["red", "blue", "green"]
 markers = ["o", "s", "^"]
@@ -68,7 +73,7 @@ NNODES=1000000
 
 i = 0
 for DMEAN in ["0"]:
-    df = pd.read_csv(f"/Users/avazquez/av2atg/red/data/dupsplit_q{Q}_n{NNODES}_dmean{DMEAN}_i0_nodes.csv")
+    df = pd.read_csv(os.path.join(local, f"data/dupsplit_q{Q}_n{NNODES}_dmean{DMEAN}_i0_nodes.csv"))
     for key in ["duration", "total_float"]:
         df[key]=df[key]*NNODES + int(key=="total_float")
     x, y = loghis(df[v].values, base=2)
@@ -88,7 +93,7 @@ NNODES=1000000
 
 i = 0
 for Q in ["0.10", "0.30", "0.60"]:
-    df = pd.read_csv(f"/Users/avazquez/av2atg/red/data/dupsplit_q{Q}_n{NNODES}_dmean{DMEAN}_i0_nodes.csv")
+    df = pd.read_csv(os.path.join(local, f"data/dupsplit_q{Q}_n{NNODES}_dmean{DMEAN}_i0_nodes.csv"))
     for key in ["duration", "total_float"]:
         df[key]=df[key]*DMEAN*NNODES + int(key=="total_float")
     x, y = loghis(df[v].values, base=2)
@@ -102,7 +107,7 @@ ax[1].set(xlabel=r"$T$",ylabel=r"$P(T)$", xscale='log', yscale='log')
 ax[1].legend(loc = 'lower left', frameon = 0, handletextpad = 0, fontsize = 12)
 
 plt.subplots_adjust(bottom=0, right=2, wspace=0.3)
-plt.savefig(f'/Users/avazquez/Dropbox/submissions/dupsplit_2024/{fig_name}.pdf',bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
+plt.savefig(os.path.join(local, f'tex/dupsplit_duration/{fig_name}.pdf'),bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
 
 fig_name = "fig_model_d1"
 
@@ -115,7 +120,7 @@ markers = ["o", "s", "^"]
 lines = ["--", "-.", ":"]
 i = 0
 for Q in ["0.10", "0.30", "0.60"]:
-    df = pd.read_csv(f"/Users/avazquez/av2atg/red/data/dupsplit_constant_q{Q}_n{NNODES}_i0_nodes.csv")
+    df = pd.read_csv(os.path.join(local, f"data/dupsplit_constant_q{Q}_n{NNODES}_i0_nodes.csv"))
     df["total_float"]=df["total_float"] + 1
     x, y = loghis(df[v].values, base=2)
     ax.scatter(x, y, marker=markers[i], c=colors[i], label=f"$q=${Q[:-1]}")
@@ -127,13 +132,13 @@ for Q in ["0.10", "0.30", "0.60"]:
 ax.set(xlabel=r"$T$",ylabel=r"$P(T)$", xscale='log', yscale='log')
 ax.legend(loc = 'lower left', frameon = 0, handletextpad = 0, fontsize = 12)
 
-plt.savefig(f'/Users/avazquez/Dropbox/submissions/dupsplit_2024/{fig_name}.pdf',bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
+plt.savefig(os.path.join(local, f'tex/dupsplit_duration/{fig_name}.pdf'),bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
 
 #
 #   construction projects
 #
 
-data = pd.read_csv("/Users/avazquez/av2atg/red/data/warehouse_data.csv")
+data = pd.read_csv(os.path.join(local, "data/warehouse_data.csv"))
 projects = list(data.project_id.unique())
 
 fig_name = "fig_data_d"
@@ -175,7 +180,7 @@ ax[2].set(xlabel=r"$\gamma_d$", ylabel="Number of Projects")
 ax[2].set_title(f"{titles[2]}", x=-0.1)
 
 plt.subplots_adjust(bottom=0, right=2, wspace=0.3)
-plt.savefig(f'/Users/avazquez/Dropbox/submissions/dupsplit_2024/{fig_name}.pdf',bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
+plt.savefig(os.path.join(local, f'tex/dupsplit_duration/{fig_name}.pdf'), bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
 
 fig_name = "fig_data_T"
 
@@ -217,7 +222,7 @@ ax[2].set(xlabel=r"$\gamma_T$", ylabel="Number of Projects", xticks=np.arange(-1
 ax[2].set_title(f"{titles[i]}", x=-0.1)
 
 plt.subplots_adjust(bottom=0, right=2, wspace=0.3)
-plt.savefig(f'/Users/avazquez/Dropbox/submissions/dupsplit_2024/{fig_name}.pdf',bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
+plt.savefig(os.path.join(local, f'tex/dupsplit_duration/{fig_name}.pdf'),bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
 
 fig_name = "fig_Qz_D"
 
@@ -276,7 +281,7 @@ ax[2].legend(loc = 'upper right', frameon = 0, handletextpad = 0, fontsize = 12)
 ax[2].set_title(f"{titles[i]}", x=-0.1)
     
 plt.subplots_adjust(bottom=0, right=2, wspace=0.3)
-plt.savefig(f'/Users/avazquez/Dropbox/submissions/dupsplit_2024/{fig_name}.pdf',bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
+plt.savefig(os.path.join(local, f'tex/dupsplit_duration/{fig_name}.pdf'), bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
 
 fig_name = "fig_Qz_exp"
 
@@ -340,7 +345,7 @@ for project in projects[:3]:
     i += 1
     
 plt.subplots_adjust(bottom=0, right=2, wspace=0.3)
-plt.savefig(f'/Users/avazquez/Dropbox/submissions/dupsplit_2024/{fig_name}.pdf',bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
+plt.savefig(os.path.join(local, f'tex/dupsplit_duration/{fig_name}.pdf'), bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
 
 #
 #   bn vs n, lognormal
@@ -441,5 +446,5 @@ ax[i].legend(loc = 'upper right', frameon = 0, handletextpad = 0, fontsize = 12)
 ax[i].set_title(f"{titles[i]}", x=-0.1)
 
 plt.subplots_adjust(bottom=0, right=2, wspace=0.3)
-plt.savefig(f'/Users/avazquez/Dropbox/submissions/dupsplit_2024/{fig_name}.pdf',bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
+plt.savefig(os.path.join(local, f'tex/dupsplit_duration/{fig_name}.pdf'), bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
 
