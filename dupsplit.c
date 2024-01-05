@@ -80,12 +80,16 @@ int main(int argc, char **argv) {
 	//
 	// average distance
 	//
-	float dmean=0,dsum=0;
+	double dmean=0,dsum=0,dmean2=0;
 	for (i=0;i<=diameter_max;i++) {
 		dsum+=ave_nodes_at_distance_array[i];
 		dmean+=i*ave_nodes_at_distance_array[i];
+		dmean2+=i*i*ave_nodes_at_distance_array[i];
 	}
         dmean/=dsum;
+        dmean2/=dsum;
+	double dsigma=dmean2-dmean*dmean;
+	dsigma=(dsigma>0)?sqrt(dsigma):0;
 	//
 	// calculate cumulative node count at distance
 	// normalize box count
@@ -111,7 +115,7 @@ int main(int argc, char **argv) {
 	char filename[500];
 	sprintf(filename,"%s_df.csv",fileoutput);
 	FILE *file=fopen(filename,"wt");
-	fprintf(file,"mean,sigma,dmean\n%f,%f,%f\n",mean,sigma,dmean);
+	fprintf(file,"mean,sigma,dmean,dsigma\n%f,%f,%f,%f\n",mean,sigma,dmean,dsigma);
 	sprintf(filename,"%s_fractal.csv",fileoutput);
 	file=fopen(filename,"wt");
         fprintf(file,"d,m,b\n");

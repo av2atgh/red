@@ -1,8 +1,10 @@
 N=1000000
-NETS=1
+NETS=100
 #for q in {0..55}
 #for q in 10 20 30 40 50 60 70 80 90
-for q in 80 90
+#for q in 80 90
+q=60
+for N in 1000 3000 10000 30000 100000 300000 1000000
 do
 	echo $q
 	if [ $q -lt 10 ]

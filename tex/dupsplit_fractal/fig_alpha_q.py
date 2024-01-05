@@ -45,5 +45,6 @@ ax.set(xlabel=r'$q$', ylabel=r'$\beta$')
 #    ax[i].set_title(r'A) $q=0.3$' if i==0 else r'B) $q=0.6$', x=-0.1, y=1.05)
 
 #plt.subplots_adjust(bottom=0, top=1.5, hspace=0.3)
-plt.savefig('/Users/avazquez/Dropbox/submissions/dupsplit_fractal_2023/fig_alpha_q.pdf',bbox_inches='tight', facecolor='white', edgecolor='none', 
-dpi=300)
+plt.savefig('/Users/avazquez/Dropbox/submissions/dupsplit_fractal_2023/fig_alpha_q.eps',bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
+plt.savefig('/Users/avazquez/Dropbox/submissions/dupsplit_fractal_2023/fig_alpha_q.pdf',bbox_inches='tight', facecolor='white', edgecolor='none', dpi=300)
+
